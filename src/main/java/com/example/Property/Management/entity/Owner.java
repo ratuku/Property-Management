@@ -1,7 +1,6 @@
 package com.example.Property.Management.entity;
 
 import lombok.Data;
-import org.hibernate.mapping.Property;
 
 import javax.persistence.*;
 import java.util.List;
