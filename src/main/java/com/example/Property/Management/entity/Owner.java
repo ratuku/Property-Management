@@ -14,7 +14,7 @@ public class Owner {
     private long owner_id;
 
     private String emailaddress;
-
+    private String name;
     private String phonenumber;
 
     @OneToMany(targetEntity = Property.class)

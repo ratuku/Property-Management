@@ -16,6 +16,10 @@ public class Lease_agreement {
     private String expected_rent;
     private String number_of_month;
     private Date datetime;
+    private boolean iscurrent;
+
+    @OneToOne(targetEntity = Property.class)
+    private Property property_id;
 
     @PrePersist
     private void initDate(){

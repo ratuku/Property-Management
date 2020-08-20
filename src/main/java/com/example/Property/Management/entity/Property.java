@@ -16,8 +16,8 @@ public class Property {
     @OneToOne(targetEntity = Property_type.class)
     private Property_type property_type;
 
-    @OneToMany(targetEntity = Lease_agreement.class)
-    private List<Lease_agreement> lease_agreement;
+/*    @OneToMany(targetEntity = Lease_agreement.class)
+    private List<Lease_agreement> lease_agreement;*/
 
     private String town;
 
