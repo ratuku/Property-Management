@@ -12,7 +12,7 @@ import javax.persistence.Id;
 public class Transaction_type {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long transaction_type_id;
 
     private String name;

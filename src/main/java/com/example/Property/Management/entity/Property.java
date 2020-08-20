@@ -10,7 +10,7 @@ import java.util.List;
 public class Property {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long property_id;
 
     @OneToOne(targetEntity = Property_type.class)

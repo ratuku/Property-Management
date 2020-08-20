@@ -10,7 +10,7 @@ import java.util.Date;
 public class Lease_agreement {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long agreenment_id;
 
     private String expected_rent;

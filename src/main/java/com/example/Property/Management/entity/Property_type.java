@@ -12,7 +12,7 @@ import javax.persistence.Id;
 public class Property_type {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long Property_type_id;
 
     private String name;
