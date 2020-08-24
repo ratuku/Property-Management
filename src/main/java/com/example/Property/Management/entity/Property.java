@@ -10,14 +10,14 @@ import java.util.List;
 public class Property {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long property_id;
 
     @OneToOne(targetEntity = Property_type.class)
     private Property_type property_type;
 
-    @OneToMany(targetEntity = Lease_agreenment.class)
-    private List<Lease_agreenment> lease_agreenment;
+/*    @OneToMany(targetEntity = Lease_agreement.class)
+    private List<Lease_agreement> lease_agreement;*/
 
     private String town;
 
