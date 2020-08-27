@@ -1,12 +1,19 @@
 package com.example.Property.Management.auth;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
+@Repository
+@Transactional
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
@@ -18,7 +25,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.finByUsername(username);
+        User user = userRepository.findByUsername(username);
         if (user!=null){
             return user;
         }
@@ -26,4 +33,5 @@ public class UserService implements UserDetailsService {
                 "User '" + username + "' not found"
         );
     }
+
 }
