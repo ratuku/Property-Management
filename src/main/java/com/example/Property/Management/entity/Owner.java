@@ -13,8 +13,8 @@ public class Owner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long owner_id;
 
-    private String emailaddress;
     private String name;
+    private String surname;
     private String phonenumber;
 
     @OneToMany(targetEntity = Property.class)
