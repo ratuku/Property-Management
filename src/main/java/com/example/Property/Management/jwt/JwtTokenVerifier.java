@@ -75,7 +75,6 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
         // very important, sends info to next filter in the filter chain....
         filterChain.doFilter(request, response);
-
     }
 }
 
