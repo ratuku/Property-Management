@@ -30,5 +30,4 @@ public class PropertyAPI {
         return propertyTypeRepository.save(property_type);
     }
 
-
 }
