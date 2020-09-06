@@ -1,33 +1,29 @@
 package com.example.Property.Management.api;
 
-import com.example.Property.Management.entity.Property_type;
-import com.example.Property.Management.service.Property_typeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.Property.Management.entity.Property;
+import com.example.Property.Management.entity.Transaction_type;
+import com.example.Property.Management.repository.PropertyRepository;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="crud",produces="application/json")
+@RequestMapping(path = "api/property/", produces = "application/json")
 public class PropertyAPI {
 
-    @Autowired
-    private Property_typeRepository propertyTypeRepository;
+    private PropertyRepository propertyRepository;
 
-
-    @GetMapping("/allProperty_types")
-    public List<Property_type> getAll() {
-
-        System.out.println("getAll properties \n");
-
-        return propertyTypeRepository.findAll();
+    @GetMapping("{id}")
+    public Property getProperty(@PathParam("id") Long id) {
+        Property property = propertyRepository.getOne(id);
+        return property;
     }
 
-    @PostMapping("/property_type")
-    public Property_type createProperty_type(@Validated @RequestBody Property_type property_type){
-
-        return propertyTypeRepository.save(property_type);
+    @PostMapping
+    public void saveProperty(@Validated @RequestBody Property property){
+        Property property1 = propertyRepository.save(property);
     }
 
 }

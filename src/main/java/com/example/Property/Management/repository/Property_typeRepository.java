@@ -1,6 +1,5 @@
-package com.example.Property.Management.service;
+package com.example.Property.Management.repository;
 
-import com.example.Property.Management.entity.Property;
 import com.example.Property.Management.entity.Property_type;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
