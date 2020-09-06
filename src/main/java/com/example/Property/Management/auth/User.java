@@ -15,7 +15,7 @@ import java.util.Collection;
 
 @Data
 @Entity
-@NoArgsConstructor(access= AccessLevel.PROTECTED, force=true)
+@NoArgsConstructor(access= AccessLevel.PUBLIC, force=true)
 @RequiredArgsConstructor
 public class User implements UserDetails {
 

@@ -9,13 +9,13 @@ import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="api/transaction_type/",produces="application/json")
+@RequestMapping(path="api/transaction_type",produces="application/json")
 public class Transaction_typeAPI {
 
     private Transaction_typeRepository typeRepository;
 
-    @GetMapping("{id}")
-    public List<Transaction_type> getTransaction_types(@PathParam("id") int id){
+    @GetMapping()
+    public List<Transaction_type> getTransaction_types(){
         List<Transaction_type> types = typeRepository.findAll();
         return types;
     }

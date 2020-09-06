@@ -1,9 +1,7 @@
 package com.example.Property.Management.api;
 
 import com.example.Property.Management.entity.Bank;
-import com.example.Property.Management.entity.Lease_agreement;
 import com.example.Property.Management.repository.BankRepository;
-import com.example.Property.Management.repository.Lease_agreementRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +17,7 @@ public class BankAPI {
     private BankRepository bankRepository;
 
     @RequestMapping("{id}")
-    public Bank getLease_agreement(@PathParam("id") long id){
+    public Bank getBankEntry(@PathParam("id") long id){
         Bank bank = bankRepository.getOne(id);
         return bank;
     }
@@ -29,4 +27,7 @@ public class BankAPI {
         Bank bank1 = bankRepository.save(bank);
         return bank1;
     }
+
+    //https://stackoverflow.com/questions/52321463/how-to-call-a-rest-controller-from-another-rest-controller
+    //https://docs.spring.io/autorepo/docs/spring-android/1.0.x/reference/html/rest-template.html
 }
