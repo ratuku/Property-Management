@@ -2,6 +2,7 @@ package com.example.Property.Management.api;
 
 import com.example.Property.Management.entity.Bank;
 import com.example.Property.Management.repository.BankRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,12 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.websocket.server.PathParam;
 
 @Controller
-@RequestMapping(path = "/api/bank/", produces = "application/json")
+@RequestMapping(path = "api/bank", produces = "application/json")
 public class BankAPI {
 
+    @Autowired
     private BankRepository bankRepository;
 
-    @RequestMapping("{id}")
+    @RequestMapping("/{id}")
     public Bank getBankEntry(@PathParam("id") long id){
         Bank bank = bankRepository.getOne(id);
         return bank;

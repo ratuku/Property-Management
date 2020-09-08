@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="crud",produces="application/json")
+@RequestMapping(path="api/propertyType",produces="application/json")
 public class Property_typeAPI {
 
     @Autowired
     private Property_typeRepository propertyTypeRepository;
 
 
-    @GetMapping("/allProperty_types")
+    @GetMapping()
     public List<Property_type> getAll() {
 
         System.out.println("getAll properties \n");
