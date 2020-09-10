@@ -7,18 +7,20 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "api/owner/", produces = "application/json")
+@RequestMapping(path = "api/owner", produces = "application/json")
 public class OwnerAPI {
 
     @Autowired
     private OwnerRepository ownerRepository;
 
-    @GetMapping("{id}")
-    public Owner getOwner(@PathParam("id") long id){
-        Owner owner = ownerRepository.getOne(id);
-        return  owner;
+    @GetMapping("/{id}")
+    public Owner getOwner(@PathVariable("id") Long id){
+        System.out.println("Id: " + id);
+        Optional<Owner> owner = ownerRepository.findById(id);
+        return  owner.get();
     }
 
     @PostMapping

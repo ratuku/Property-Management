@@ -5,11 +5,13 @@ import com.example.Property.Management.repository.Lease_agreementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.websocket.server.PathParam;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(path = "/api/lease", produces = "application/json")
@@ -19,9 +21,9 @@ public class Lease_agreementAPI {
     private Lease_agreementRepository leaseAgreementRepository;
 
     @RequestMapping("/{id}")
-    public Lease_agreement getLease_agreement(@PathParam("id") long id){
-        Lease_agreement lease_agreement = leaseAgreementRepository.getOne(id);
-        return lease_agreement;
+    public Lease_agreement getLease_agreement(@PathVariable("id") Long id){
+        Optional<Lease_agreement> lease_agreement = leaseAgreementRepository.findById(id);
+        return lease_agreement.get();
     }
 
     @PostMapping

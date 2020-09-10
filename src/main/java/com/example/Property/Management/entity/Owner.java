@@ -16,8 +16,4 @@ public class Owner {
     private String name;
     private String surname;
     private String phonenumber;
-
-    @OneToMany(targetEntity = Property.class)
-    private List<Property> properties;
-
 }

@@ -7,10 +7,18 @@ import org.springframework.beans.BeanUtils;
 
 public class Converter {
 
-    public static User dtoToUser(UserDto userDTO){
+    /*public static User dtoToUser(UserDto userDTO){
         User user=new User();
         BeanUtils.copyProperties(user,userDTO);
         return user;
+    }*/
+
+    public static UserDto userToDto(User user){
+        UserDto userDto=new UserDto();
+        //BeanUtils.copyProperties(userDto,user);
+        userDto.setUsername(user.getUsername());
+        userDto.setOwnerId(user.getOwner().getOwner_id());
+        return userDto;
     }
 
 }

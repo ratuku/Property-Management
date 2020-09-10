@@ -1,5 +1,6 @@
 package com.example.Property.Management.jwt;
 
+import com.example.Property.Management.api.initAPI;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,9 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -66,12 +65,17 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .compact();
         response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
 
+        initAPI apin = new initAPI();
+        apin.initAPIHello(token, authResult.getName());
+
         response.setContentType("application/json");
         //String json = new Gson().toJson();
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         out.print("{\"my_key\": \"my_value\"}");
         out.flush();
+
+        
     }
 }
 
