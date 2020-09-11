@@ -4,10 +4,11 @@ import com.example.Property.Management.entity.Owner;
 import com.example.Property.Management.entity.Property;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PropertyRepository extends JpaRepository<Property,Long> {
 
-    public Optional<Property> findByOwner_Owner_id(Long id);
+    public List<Property> findAllByOwner_OwnerId(Long id);
 
 }

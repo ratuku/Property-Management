@@ -1,6 +1,6 @@
 package com.example.Property.Management.jwt;
 
-import com.example.Property.Management.api.initAPI;
+import com.example.Property.Management.utility.CallAPI;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -65,17 +65,15 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .compact();
         response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
 
-        initAPI apin = new initAPI();
-        apin.initAPIHello(token, authResult.getName());
+        CallAPI apin = new CallAPI();
+        String data = apin.callHome(token, authResult.getName());
 
         response.setContentType("application/json");
         //String json = new Gson().toJson();
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        out.print("{\"my_key\": \"my_value\"}");
+        out.print(data);
         out.flush();
-
-        
     }
 }
 

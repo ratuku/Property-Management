@@ -17,7 +17,7 @@ public class Converter {
         UserDto userDto=new UserDto();
         //BeanUtils.copyProperties(userDto,user);
         userDto.setUsername(user.getUsername());
-        userDto.setOwnerId(user.getOwner().getOwner_id());
+        userDto.setOwnerId(user.getOwner().getOwnerId());
         return userDto;
     }
 

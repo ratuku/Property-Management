@@ -1,4 +1,4 @@
-package com.example.Property.Management.api;
+package com.example.Property.Management.utility;
 
 
 import com.example.Property.Management.dto.UserDto;
@@ -13,36 +13,37 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 
 @Configurable
-public class initAPI {
+public class CallAPI {
 
     private final RestTemplate restTemplate;
 
-    @Autowired
-    public initAPI () {
+    public CallAPI() {
         this.restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new GsonHttpMessageConverter());
     }
 
 
-    public void initAPIHello(String token, String principle){
+    public String callHome(String token, String principle){
         //init
         // Set the Accept header
         HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setAccept(Collections.singletonList(new MediaType("application","json")));
+        requestHeaders.setAccept(Collections.singletonList(new MediaType("application","string")));
         requestHeaders.setBearerAuth(token);
         HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
 
         String url = "http://localhost:8080/api/home/"+ principle;
         System.out.println("restTemplate: " + restTemplate);
         System.out.println("url: " + url);
-        ResponseEntity<UserDto> responseEntity = restTemplate.exchange(
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 requestEntity,
-                UserDto.class
+                String.class
         );
-        UserDto userDto = responseEntity.getBody();
-        //System.out.println("userDto: " + userDto);
+        String data = responseEntity.getBody();
+        System.out.println("data: " + data);
+
+        return data;
     }
 
 }
