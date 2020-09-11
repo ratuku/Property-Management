@@ -1,4 +1,4 @@
-package com.example.Property.Management.api;
+package com.example.Property.Management.auth;
 
 import com.example.Property.Management.auth.User;
 import com.example.Property.Management.auth.UserRepository;

@@ -25,8 +25,15 @@ public class PropertyAPI {
     }
 
     @PostMapping
-    public void saveProperty(@Validated @RequestBody Property property){
+    public Property saveProperty(@Validated @RequestBody Property property){
         Property property1 = propertyRepository.save(property);
+        return property1;
+    }
+
+    @DeleteMapping
+    public Property deleteProperty(@Validated @RequestBody Property property){
+        Property property1 = propertyRepository.save(property);
+        return property1;
     }
 
 }
