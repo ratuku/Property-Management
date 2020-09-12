@@ -2,7 +2,10 @@ package com.example.Property.Management.jwt;
 
 import com.example.Property.Management.utility.CallAPI;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.Gson;
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +22,7 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.Date;
 
+@Slf4j
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -33,6 +37,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+
         try {
             //logger.info("request.getInputStream(): " + new ObjectMapper().);
             UsernameAndPasswordAuthenticationRequest authenticationRequest = new ObjectMapper()
@@ -73,6 +78,21 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         out.print(data);
+        out.flush();
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+
+        log.info("Authresult: " + failed);
+
+        //super.unsuccessfulAuthentication(request, response, failed);
+        response.sendError(401);
+        response.setContentType("application/json");
+
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        out.print(failed);
         out.flush();
     }
 }

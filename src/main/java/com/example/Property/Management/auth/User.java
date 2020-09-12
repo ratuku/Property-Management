@@ -28,10 +28,10 @@ public class User implements UserDetails {
     private final String username;
     private String password;
     //private final Set<? extends GrantedAuthority> grantedAuthorities;
-    private final boolean isAccountNonExpired;
-    private final boolean isAccountNonLocked;
-    private final boolean isCredentialsNonExpired;
-    private final boolean isEnabled;
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isCredentialsNonExpired;
+    private boolean isEnabled;
     @OneToOne(targetEntity = Owner.class)
     private Owner owner;
 
@@ -74,5 +74,7 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return isEnabled;
     }
+
+
 
 }
