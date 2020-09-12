@@ -1,20 +1,20 @@
 package com.example.Property.Management.api;
 
+import com.example.Property.Management.auth.User;
 import com.example.Property.Management.auth.UserService;
 import com.example.Property.Management.dto.UserDto;
 import com.example.Property.Management.entity.*;
 import com.example.Property.Management.repository.*;
+import com.example.Property.Management.utility.Converter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.XSlf4j;
 import org.slf4j.ILoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.print.DocFlavor;
 import java.util.*;
 
 @Log4j2
@@ -76,5 +76,33 @@ public class homeAPI {
         }
 
         return "";
+    }
+
+    @PostMapping("/register")
+    public Map<String, Object> addNewUser(@RequestBody RegistrationForm form)  {
+
+        Map<String, Object> mapResponse = new HashMap<>();
+        try {
+            log.info("form: "+ form);
+            Owner owner = form.getOwner();
+            owner = ownerRepository.save(owner);
+            mapResponse.put("owner", owner);
+
+            User user = form.getUser();
+            user.encodePassword();
+            user.setOwner(owner);
+            user = userService.saveUser(user);
+            UserDto userDto = Converter.userToDto(user);
+            mapResponse.put("user",userDto);
+
+            return mapResponse;
+        } catch (Exception exception){
+
+            log.error(exception.toString());
+            mapResponse = new HashMap<>();
+            mapResponse.put("Error", new String("Error while trying to save new user."));
+            return mapResponse;
+        }
+
     }
 }

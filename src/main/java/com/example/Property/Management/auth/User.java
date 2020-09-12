@@ -1,13 +1,16 @@
 package com.example.Property.Management.auth;
 
 import com.example.Property.Management.entity.Owner;
+import com.example.Property.Management.security.PasswordConfig;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import  org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -23,7 +26,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private final String username;
-    private final String password;
+    private String password;
     //private final Set<? extends GrantedAuthority> grantedAuthorities;
     private final boolean isAccountNonExpired;
     private final boolean isAccountNonLocked;
@@ -41,6 +44,10 @@ public class User implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public void encodePassword(){
+        this.password = new PasswordConfig().passwordEncoder().encode(this.password);
     }
 
     @Override

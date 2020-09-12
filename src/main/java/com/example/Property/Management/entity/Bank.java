@@ -18,6 +18,9 @@ public class Bank {
     @OneToOne(targetEntity = Owner.class)
     private Owner owner;
 
+    @OneToOne(targetEntity = Transaction_type.class)
+    private Transaction_type transaction_type;
+
     private Date date;
 
     @PrePersist
