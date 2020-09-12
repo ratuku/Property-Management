@@ -11,13 +11,10 @@ public class Owner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long owner_id;
+    @Column(name = "owner_id")
+    private long ownerId;
 
-    private String emailaddress;
     private String name;
+    private String surname;
     private String phonenumber;
-
-    @OneToMany(targetEntity = Property.class)
-    private List<Property> properties;
-
 }
