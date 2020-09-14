@@ -61,4 +61,13 @@ public class UserService implements UserDetailsService {
         User user1 = userRepository.save(user);
         return  user1;
     }
+
+    public void setUserToken(String token, String username){
+        userRepository.setUserJwtToken(token, username);
+    }
+
+    public String getUserToken(String username){
+        User user = userRepository.findByUsername(username);
+        return user.getJwtToken();
+    }
 }

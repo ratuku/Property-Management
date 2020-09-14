@@ -56,8 +56,13 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     .parseClaimsJws(token);
             Claims body = claimsJws.getBody();
             String username = body.getSubject();
-            var authorities = (List<Map<String,String>>) body.get("authorities");
 
+            String tokenDB = dataService.getUserToken(username);
+            if(!token.equals(tokenDB)){
+                throw new IllegalStateException(String.format("Token %s is no longer valid", token));
+            }
+
+            var authorities = (List<Map<String,String>>) body.get("authorities");
             Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
                     .map(m -> new SimpleGrantedAuthority(m.get("authority")))
                     .collect(Collectors.toSet());
@@ -67,7 +72,6 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     null,
                     simpleGrantedAuthorities
             );
-
             // from this point the user can be authenticated
             SecurityContextHolder.getContext().setAuthentication(authentication);
             System.out.println("Authenticated: \n" + authentication);

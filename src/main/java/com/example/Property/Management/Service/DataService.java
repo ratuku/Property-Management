@@ -91,6 +91,13 @@ public class DataService {
         return "";
     }
 
+    public void setUserToken(String token, String username){
+        userService.setUserToken(token, username);
+    }
 
+    public String getUserToken(String username){
+        String token = userService.getUserToken(username);
+        return token;
+    }
 
 }

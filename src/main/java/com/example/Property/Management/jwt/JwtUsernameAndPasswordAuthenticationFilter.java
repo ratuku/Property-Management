@@ -89,7 +89,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .signWith(secretKey)
                 .compact();
         response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
-
+        dataService.setUserToken(token, authResult.getName());
         String data = dataService.getUserFullInfo(authResult.getName());
 
         response.setContentType("application/json");
