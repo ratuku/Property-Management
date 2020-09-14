@@ -59,7 +59,8 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
             String tokenDB = dataService.getUserToken(username);
             if(!token.equals(tokenDB)){
-                throw new IllegalStateException(String.format("Token %s is no longer valid", token));
+                //throw new IllegalStateException(String.format("Token %s is no longer valid", token));
+                throw new JwtException(String.format("Token %s is no longer valid", token));
             }
 
             var authorities = (List<Map<String,String>>) body.get("authorities");
@@ -77,10 +78,13 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             System.out.println("Authenticated: \n" + authentication);
 
         }catch (JwtException jwtException){
-            throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
+            filterChain.doFilter(request, response);
+            System.out.println(String.format("Token %s cannot be trusted", token));
+            //throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
         }
         // very important, sends info to next filter in the filter chain....
         filterChain.doFilter(request, response);
+
     }
 }
 

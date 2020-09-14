@@ -8,7 +8,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);
 
     @Modifying
-    @Query(value = "update User u set u.jwtToken = ? where u.username = ?",
+    @Query(value = "update User u set u.jwt_token = ? where u.username = ?",
             nativeQuery = true)
     void setUserJwtToken(String userJwtToken, String username);
 }
