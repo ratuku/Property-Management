@@ -3,9 +3,11 @@ package com.example.Property.Management.jwt;
 import com.example.Property.Management.entity.RegistrationForm;
 import com.example.Property.Management.Service.DataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.jsonwebtoken.Jwts;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.Date;
+import org.json.simple.JSONObject;
 
 @Slf4j
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -104,14 +107,15 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         log.info("Authresult: " + failed);
 
-        //super.unsuccessfulAuthentication(request, response, failed);
-        response.sendError(401);
-        response.setContentType("application/json");
+        JSONObject jsonObject = new JSONObject();
 
-        response.setCharacterEncoding("UTF-8");
-        PrintWriter out = response.getWriter();
-        out.print(failed);
-        out.flush();
+        jsonObject.put("Error", failed.toString()
+                .split(": ")[1]);
+
+        response.setContentType("application/json");
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.getWriter().write(jsonObject.toJSONString());
+
     }
 }
 

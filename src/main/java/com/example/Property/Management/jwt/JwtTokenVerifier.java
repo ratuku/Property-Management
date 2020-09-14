@@ -6,6 +6,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import org.json.simple.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -48,6 +50,8 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         }
 
         String token = authorizationHeader.replace(jwtConfig.getTokenPrefix(), "");
+        JSONObject jsonErrorPayload = new JSONObject();
+        response.setContentType("application/json");
 
         try {
             Jws<Claims>  claimsJws = Jwts.parserBuilder()
@@ -60,7 +64,12 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             String tokenDB = dataService.getUserToken(username);
             if(!token.equals(tokenDB)){
                 //throw new IllegalStateException(String.format("Token %s is no longer valid", token));
-                throw new JwtException(String.format("Token %s is no longer valid", token));
+                //throw new JwtException(String.format("Token %s is no longer valid", token));
+                jsonErrorPayload.put("Error", "Token is no longer valid");
+
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                response.getWriter().write(jsonErrorPayload.toJSONString());
+                return;
             }
 
             var authorities = (List<Map<String,String>>) body.get("authorities");
@@ -78,13 +87,15 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             System.out.println("Authenticated: \n" + authentication);
 
         }catch (JwtException jwtException){
-            filterChain.doFilter(request, response);
-            System.out.println(String.format("Token %s cannot be trusted", token));
-            //throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
+            //filterChain.doFilter(request, response);
+            jsonErrorPayload.put("Error", "Token cannot be trusted");
+
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write(jsonErrorPayload.toJSONString());
+            return;
         }
         // very important, sends info to next filter in the filter chain....
         filterChain.doFilter(request, response);
-
     }
 }
 
