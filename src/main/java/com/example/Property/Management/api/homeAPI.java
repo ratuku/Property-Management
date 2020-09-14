@@ -78,4 +78,31 @@ public class homeAPI {
         return "";
     }
 
+    @PostMapping("/register")
+    public Map<String, Object> addNewUser(@RequestBody RegistrationForm form)  {
+
+        Map<String, Object> mapResponse = new HashMap<>();
+        try {
+            log.info("form: "+ form);
+            Owner owner = form.getOwner();
+            owner = ownerRepository.save(owner);
+            mapResponse.put("owner", owner);
+
+            User user = form.getUser();
+            user.encodePassword();
+            user.setOwner(owner);
+            user = userService.saveUser(user);
+            UserDto userDto = Converter.userToDto(user);
+            mapResponse.put("user",userDto);
+
+            return mapResponse;
+        } catch (Exception exception){
+
+            log.error(exception.toString());
+            mapResponse = new HashMap<>();
+            mapResponse.put("Error", new String("Error while trying to save new user."));
+            return mapResponse;
+        }
+
+    }
 }

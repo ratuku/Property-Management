@@ -46,25 +46,4 @@ public class CallAPI {
         return data;
     }
 
-
-/*    public String getTokenAfterAuthentication(){
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setAccept(Collections.singletonList(new MediaType("application","string")));
-        HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
-
-        String url = "http://localhost:8080/login/"+ principle;
-        System.out.println("url: " + url);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                requestEntity,
-                String.class
-        );
-        String data = responseEntity.getBody();
-        responseEntity.getHeaders().
-        System.out.println("data: " + data);
-
-        return data;
-    }*/
-
 }
