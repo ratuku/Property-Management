@@ -1,7 +1,6 @@
 package com.example.Property.Management.jwt;
 
-import com.example.Property.Management.auth.UserService;
-import com.example.Property.Management.utility.DataService;
+import com.example.Property.Management.Service.DataService;
 import com.google.common.base.Strings;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
