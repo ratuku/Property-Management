@@ -5,6 +5,7 @@ import com.example.Property.Management.jwt.JwtConfig;
 import com.example.Property.Management.jwt.JwtTokenVerifier;
 import com.example.Property.Management.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import com.example.Property.Management.repository.OwnerRepository;
+import com.example.Property.Management.utility.DataService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,15 +28,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
-    private final OwnerRepository ownerRepository;
+    private final DataService dataService;
 
     public WebSecurityConfig(PasswordEncoder passwordEncoder,
-                             UserService userService, SecretKey secretKey, JwtConfig jwtConfig, OwnerRepository ownerRepository){
+                             UserService userService, SecretKey secretKey, JwtConfig jwtConfig, DataService dataService){
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.secretKey = secretKey;
         this.jwtConfig = jwtConfig;
-        this.ownerRepository = ownerRepository;
+        this.dataService = dataService;
     }
 
     @Override
@@ -45,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, ownerRepository, userService))
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, dataService))
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig, userService), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/","/css/**","/js/**", "/bootstrap-3.4.1-dist/**", "/controller/**","/api/register/**").permitAll()

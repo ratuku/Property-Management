@@ -1,10 +1,8 @@
 package com.example.Property.Management.jwt;
 
-import com.example.Property.Management.auth.UserService;
 import com.example.Property.Management.entity.RegistrationForm;
-import com.example.Property.Management.repository.OwnerRepository;
 import com.example.Property.Management.utility.CallAPI;
-import com.example.Property.Management.utility.Data;
+import com.example.Property.Management.utility.DataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import lombok.SneakyThrows;
@@ -34,16 +32,14 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     private final AuthenticationManager authenticationManager;
     private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
-    private final OwnerRepository ownerRepository;
-    private final UserService userService;
+    private final DataService dataService;
     RequestMatcher registerMatcher = new AntPathRequestMatcher("/api/register/**");
 
-    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, SecretKey secretKey, OwnerRepository ownerRepository, UserService userService) {
+    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, SecretKey secretKey, DataService dataService ) {
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
-        this.ownerRepository = ownerRepository;
-        this.userService = userService;
+        this.dataService = dataService;
     }
 
     @SneakyThrows
@@ -58,7 +54,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 log.info("brefore form");
                 RegistrationForm form = new ObjectMapper()
                         .readValue(servletInputStream, RegistrationForm.class);
-                authenticationRequest = new Data().registerUser(userService, ownerRepository, form);
+                authenticationRequest = dataService.registerUser(form);
 
             } catch (IOException exception1) {
                 throw new IOException(exception1);
@@ -95,8 +91,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .compact();
         response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
 
-        CallAPI apin = new CallAPI();
-        String data = apin.callHome(token, authResult.getName());
+        String data = dataService.getUserFullInfo(authResult.getName());
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

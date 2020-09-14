@@ -1,6 +1,7 @@
 package com.example.Property.Management.jwt;
 
 import com.example.Property.Management.auth.UserService;
+import com.example.Property.Management.utility.DataService;
 import com.google.common.base.Strings;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -27,12 +28,12 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
-    private final UserService userService;
+    private final DataService dataService;
 
-    public JwtTokenVerifier(SecretKey secretKey, JwtConfig jwtConfig, UserService userService) {
+    public JwtTokenVerifier(SecretKey secretKey, JwtConfig jwtConfig, DataService dataService) {
         this.secretKey = secretKey;
         this.jwtConfig = jwtConfig;
-        this.userService = userService;
+        this.dataService = dataService;
     }
 
     @Override
