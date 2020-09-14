@@ -35,6 +35,7 @@ public class User implements UserDetails {
     private boolean isEnabled;
     @OneToOne(targetEntity = Owner.class)
     private Owner owner;
+    private String jwtToken;
 
 
     @Override
