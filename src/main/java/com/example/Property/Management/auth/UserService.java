@@ -57,8 +57,22 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
+    public Boolean isEmailUnique(String email){
+        if (getUserDtoByUsername(email)==null) return true;
+        else return false;
+    }
+
     public User saveUser(User user){
         User user1 = userRepository.save(user);
         return  user1;
+    }
+
+    public void setUserToken(String token, String username){
+        userRepository.setUserJwtToken(token, username);
+    }
+
+    public String getUserToken(String username){
+        User user = userRepository.findByUsername(username);
+        return user.getJwtToken();
     }
 }

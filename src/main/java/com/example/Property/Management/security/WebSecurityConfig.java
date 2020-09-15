@@ -4,6 +4,7 @@ import com.example.Property.Management.auth.UserService;
 import com.example.Property.Management.jwt.JwtConfig;
 import com.example.Property.Management.jwt.JwtTokenVerifier;
 import com.example.Property.Management.jwt.JwtUsernameAndPasswordAuthenticationFilter;
+import com.example.Property.Management.service.DataService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -26,13 +27,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
+    private final DataService dataService;
 
     public WebSecurityConfig(PasswordEncoder passwordEncoder,
-                             UserService userService, SecretKey secretKey, JwtConfig jwtConfig){
+                             UserService userService, SecretKey secretKey, JwtConfig jwtConfig, DataService dataService){
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.secretKey = secretKey;
         this.jwtConfig = jwtConfig;
+        this.dataService = dataService;
     }
 
     @Override
@@ -42,8 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
-                .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, dataService))
+                .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig, dataService), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/","/css/**","/js/**", "/bootstrap-3.4.1-dist/**", "/controller/**","/api/register/**").permitAll()
                 .anyRequest().authenticated()
