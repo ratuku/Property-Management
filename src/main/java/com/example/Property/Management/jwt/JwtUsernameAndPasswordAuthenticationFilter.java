@@ -1,9 +1,8 @@
 package com.example.Property.Management.jwt;
 
 import com.example.Property.Management.entity.RegistrationForm;
-import com.example.Property.Management.Service.DataService;
+import com.example.Property.Management.service.DataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.jsonwebtoken.Jwts;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

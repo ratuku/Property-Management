@@ -4,7 +4,7 @@ import com.example.Property.Management.auth.UserService;
 import com.example.Property.Management.jwt.JwtConfig;
 import com.example.Property.Management.jwt.JwtTokenVerifier;
 import com.example.Property.Management.jwt.JwtUsernameAndPasswordAuthenticationFilter;
-import com.example.Property.Management.Service.DataService;
+import com.example.Property.Management.service.DataService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
