@@ -2,6 +2,7 @@ package com.example.Property.Management.auth;
 
 import com.example.Property.Management.entity.Owner;
 import com.example.Property.Management.security.PasswordConfig;
+import com.sun.istack.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,9 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(unique=true)
+    @NotNull
     private final String username;
+    @NotNull
     private String password;
     //private final Set<? extends GrantedAuthority> grantedAuthorities;
     private boolean isAccountNonExpired;

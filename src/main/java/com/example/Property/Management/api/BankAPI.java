@@ -21,6 +21,7 @@ public class BankAPI {
     @GetMapping("/{id}")
     public List<Bank> getBankEntry(@PathVariable("id") Long id){
         List<Bank> bankEntries = bankRepository.findAllByOwner_OwnerId(id);
+
         return bankEntries;
     }
 

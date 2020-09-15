@@ -57,6 +57,11 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
+    public Boolean isEmailUnique(String email){
+        if (getUserDtoByUsername(email)==null) return true;
+        else return false;
+    }
+
     public User saveUser(User user){
         User user1 = userRepository.save(user);
         return  user1;
