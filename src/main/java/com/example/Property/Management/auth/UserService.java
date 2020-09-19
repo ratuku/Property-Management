@@ -1,7 +1,10 @@
 package com.example.Property.Management.auth;
 
 import com.example.Property.Management.dto.UserDto;
+import com.example.Property.Management.entity.ConfirmationToken;
+import com.example.Property.Management.service.ConfirmationTokenService;
 import com.example.Property.Management.utility.Converter;
+import lombok.AllArgsConstructor;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +20,11 @@ import javax.transaction.Transactional;
 @Service
 @Repository
 @Transactional
+@AllArgsConstructor
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private ConfirmationTokenService confirmationTokenService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -74,5 +74,17 @@ public class UserService implements UserDetailsService {
     public String getUserToken(String username){
         User user = userRepository.findByUsername(username);
         return user.getJwtToken();
+    }
+
+    public void confirmUser(ConfirmationToken confirmationToken){
+
+        final User user = confirmationToken.getUser();
+
+        user.setEnabled(true);
+
+        userRepository.save(user);
+
+        confirmationTokenService.deleteConfirmationToken(confirmationToken.getId());
+
     }
 }

@@ -8,6 +8,7 @@ import com.example.Property.Management.jwt.UsernameAndPasswordAuthenticationRequ
 import com.example.Property.Management.repository.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,6 +19,7 @@ import java.util.*;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class DataService {
 
     UserService userService;
@@ -26,20 +28,9 @@ public class DataService {
     BankRepository bankRepository;
     PropertyRepository propertyRepository;
     OwnerRepository ownerRepository;
-    @Autowired
-    private JavaMailSender javaMailSender;
+    JavaMailSender javaMailSender;
+    ConfirmationTokenService confirmationTokenService;
 
-    @Autowired
-    public DataService(UserService userService, Transaction_typeRepository transactionTypeRepository,
-                       Property_typeRepository propertyTypeRepository, BankRepository bankRepository,
-                       PropertyRepository propertyRepository, OwnerRepository ownerRepository) {
-        this.userService = userService;
-        this.transactionTypeRepository = transactionTypeRepository;
-        this.propertyTypeRepository = propertyTypeRepository;
-        this.bankRepository = bankRepository;
-        this.propertyRepository = propertyRepository;
-        this.ownerRepository = ownerRepository;
-    }
 
     public UsernameAndPasswordAuthenticationRequest registerUser( RegistrationForm form){
 
@@ -51,11 +42,13 @@ public class DataService {
         String originalPassword = user.getPassword();
         user.encodePassword();
         user.setOwner(owner);
-        user.setAccountNonExpired(true);
-        user.setAccountNonLocked(true);
-        user.setCredentialsNonExpired(true);
-        user.setEnabled(true);
         user = userService.saveUser(user);
+
+        //Save confirmation token
+        final ConfirmationToken confirmationToken = new ConfirmationToken(user);
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
+
+        this.sendEmail(user.getUsername(), confirmationToken.getToken());
 
         return new UsernameAndPasswordAuthenticationRequest(user.getUsername(), originalPassword);
         }
@@ -107,9 +100,9 @@ public class DataService {
         SimpleMailMessage msg = new SimpleMailMessage();
 
         msg.setTo(emailAddress);
-        msg.setSubject("Property worl:  registration");
-        msg.setText("Hi, \n \n Here is the your confirmation token. Enter this token in the registration" +
-                "page: " + token);
+        msg.setSubject("Property Academy:  registration");
+        msg.setText("Hi, \n \n Here is your confirmation token link http://localhost:8080/register/confirm?token=" +
+                token);
 
         javaMailSender.send(msg);
     }
