@@ -52,19 +52,19 @@ public class RegisterAPI {
                 throw new Exception();
             }
 
-            //owner = ownerRepository.save(owner);
+            owner = ownerRepository.save(owner);
             mapResponse.put("owner", owner);
 
             user.encodePassword();
             user.setOwner(owner);
-            //user = userService.saveUser(user);
+            user = userService.saveUser(user);
             UserDto userDto = Converter.userToDto(user);
             mapResponse.put("user", userDto);
 
             //Save confirmation token
             log.info("create confirmationToken");
             final ConfirmationToken confirmationToken = new ConfirmationToken(user);
-            //confirmationTokenService.saveConfirmationToken(confirmationToken);
+            confirmationTokenService.saveConfirmationToken(confirmationToken);
 
             log.info("confirmationToken: " + confirmationToken.toString());
 
