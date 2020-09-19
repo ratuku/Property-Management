@@ -10,6 +10,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,6 +26,8 @@ public class DataService {
     BankRepository bankRepository;
     PropertyRepository propertyRepository;
     OwnerRepository ownerRepository;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @Autowired
     public DataService(UserService userService, Transaction_typeRepository transactionTypeRepository,
@@ -97,6 +101,17 @@ public class DataService {
     public String getUserToken(String username){
         String token = userService.getUserToken(username);
         return token;
+    }
+
+    void sendEmail(String emailAddress, String token){
+        SimpleMailMessage msg = new SimpleMailMessage();
+
+        msg.setTo(emailAddress);
+        msg.setSubject("Property worl:  registration");
+        msg.setText("Hi, \n \n Here is the your confirmation token. Enter this token in the registration" +
+                "page: " + token);
+
+        javaMailSender.send(msg);
     }
 
 }

@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,6 +37,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     private final SecretKey secretKey;
     private final DataService dataService;
     RequestMatcher registerMatcher = new AntPathRequestMatcher("/api/register/**");
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, SecretKey secretKey, DataService dataService ) {
         this.authenticationManager = authenticationManager;
