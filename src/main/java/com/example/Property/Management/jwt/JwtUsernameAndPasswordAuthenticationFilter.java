@@ -36,7 +36,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
     private final DataService dataService;
-    RequestMatcher registerMatcher = new AntPathRequestMatcher("/api/register/**");
+    //RequestMatcher registerMatcher = new AntPathRequestMatcher("/api/register/**");
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -53,25 +53,11 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         UsernameAndPasswordAuthenticationRequest authenticationRequest;
         ServletInputStream servletInputStream = request.getInputStream();
-        if (registerMatcher.matches(request)) {
-            // register
-            try {
-                log.info("brefore form");
-                RegistrationForm form = new ObjectMapper()
-                        .readValue(servletInputStream, RegistrationForm.class);
-                authenticationRequest = dataService.registerUser(form);
-
-            } catch (IOException exception1) {
-                throw new IOException(exception1);
-            }
-        }
-        else {
-            try{
-                authenticationRequest = new ObjectMapper()
-                        .readValue(servletInputStream, UsernameAndPasswordAuthenticationRequest.class);
-            } catch (IOException exception){
-                throw new IOException(exception);
-            }
+        try{
+            authenticationRequest = new ObjectMapper()
+                    .readValue(servletInputStream, UsernameAndPasswordAuthenticationRequest.class);
+        } catch (IOException exception){
+            throw new IOException(exception);
         }
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(

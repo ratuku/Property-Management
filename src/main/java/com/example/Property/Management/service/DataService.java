@@ -15,6 +15,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.*;
 
 @Slf4j
@@ -45,10 +47,15 @@ public class DataService {
         user = userService.saveUser(user);
 
         //Save confirmation token
+        log.info("create confirmationToken");
         final ConfirmationToken confirmationToken = new ConfirmationToken(user);
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
+        log.info("confirmationToken: " + confirmationToken.toString());
+
+        log.info("sendEmail");
         this.sendEmail(user.getUsername(), confirmationToken.getToken());
+            //sendEmailWithAttachment();
 
         return new UsernameAndPasswordAuthenticationRequest(user.getUsername(), originalPassword);
         }
@@ -96,7 +103,7 @@ public class DataService {
         return token;
     }
 
-    void sendEmail(String emailAddress, String token){
+    public void sendEmail(String emailAddress, String token){
         SimpleMailMessage msg = new SimpleMailMessage();
 
         msg.setTo(emailAddress);

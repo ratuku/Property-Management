@@ -3,10 +3,14 @@ package com.example.Property.Management.api;
 import com.example.Property.Management.auth.User;
 import com.example.Property.Management.auth.UserService;
 import com.example.Property.Management.dto.UserDto;
+import com.example.Property.Management.entity.ConfirmationToken;
 import com.example.Property.Management.entity.Owner;
 import com.example.Property.Management.entity.RegistrationForm;
 import com.example.Property.Management.repository.OwnerRepository;
+import com.example.Property.Management.service.ConfirmationTokenService;
+import com.example.Property.Management.service.DataService;
 import com.example.Property.Management.utility.Converter;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,25 +26,24 @@ import java.util.Map;
 @Slf4j
 @RequestMapping(path = "api", produces = "application/json")
 @RestController
+@AllArgsConstructor
 public class RegisterAPI {
 
     private final UserService userService;
     private final OwnerRepository ownerRepository;
-
-    @Autowired
-    public RegisterAPI(UserService userService, OwnerRepository ownerRepository) {
-        this.userService = userService;
-        this.ownerRepository = ownerRepository;
-    }
+    private final DataService dataService;
+    ConfirmationTokenService confirmationTokenService;
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> addNewUser(@RequestBody RegistrationForm form) {
+
+        log.info("form API: ");
 
         Map<String, Object> mapResponse = new HashMap<>();
         String errorMessage = "Error while trying to save new user";
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         try {
-            log.info("form: " + form);
+            log.info("form API: " + form);
             Owner owner = form.getOwner();
             User user = form.getUser();
 
@@ -59,6 +62,16 @@ public class RegisterAPI {
             user = userService.saveUser(user);
             UserDto userDto = Converter.userToDto(user);
             mapResponse.put("user", userDto);
+
+            //Save confirmation token
+            log.info("create confirmationToken");
+            final ConfirmationToken confirmationToken = new ConfirmationToken(user);
+            confirmationTokenService.saveConfirmationToken(confirmationToken);
+
+            log.info("confirmationToken: " + confirmationToken.toString());
+
+            log.info("sendEmail");
+            dataService.sendEmail(user.getUsername(), confirmationToken.getToken());
 
             return new ResponseEntity<>(mapResponse, HttpStatus.OK);
         } catch (Exception exception) {
