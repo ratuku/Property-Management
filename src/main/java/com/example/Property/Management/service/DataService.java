@@ -108,7 +108,7 @@ public class DataService {
 
         msg.setTo(emailAddress);
         msg.setSubject("Property Academy:  registration");
-        msg.setText("Hi, \n \n Here is your confirmation token link http://localhost:8080/register/confirm?token=" +
+        msg.setText("Hi, \n \nHere is your confirmation token link http://localhost:8080/api/register/confirm?token=" +
                 token);
 
         javaMailSender.send(msg);

@@ -12,16 +12,14 @@ import com.example.Property.Management.service.DataService;
 import com.example.Property.Management.utility.Converter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequestMapping(path = "api", produces = "application/json")
@@ -54,19 +52,19 @@ public class RegisterAPI {
                 throw new Exception();
             }
 
-            owner = ownerRepository.save(owner);
+            //owner = ownerRepository.save(owner);
             mapResponse.put("owner", owner);
 
             user.encodePassword();
             user.setOwner(owner);
-            user = userService.saveUser(user);
+            //user = userService.saveUser(user);
             UserDto userDto = Converter.userToDto(user);
             mapResponse.put("user", userDto);
 
             //Save confirmation token
             log.info("create confirmationToken");
             final ConfirmationToken confirmationToken = new ConfirmationToken(user);
-            confirmationTokenService.saveConfirmationToken(confirmationToken);
+            //confirmationTokenService.saveConfirmationToken(confirmationToken);
 
             log.info("confirmationToken: " + confirmationToken.toString());
 
@@ -80,5 +78,15 @@ public class RegisterAPI {
             mapResponse.put("Error", errorMessage);
             return new ResponseEntity<>(mapResponse, httpStatus);
         }
+    }
+
+    @PostMapping("/register/confirm")
+    public ArrayList<String> confirmUser(@RequestParam("token") String token){
+        if (token.length()==36) {
+            Optional<ConfirmationToken> optionalConfirmationToken = confirmationTokenService.findConfirmationTokenByToken(token);
+
+            optionalConfirmationToken.ifPresent(userService::confirmUser);
+        }
+        return new ArrayList<String>();
     }
 }
