@@ -1,6 +1,5 @@
 package com.example.Property.Management.controller;
 
-import com.example.Property.Management.auth.User;
 import com.example.Property.Management.auth.UserService;
 import com.example.Property.Management.entity.ConfirmationToken;
 import com.example.Property.Management.entity.RegistrationForm;
@@ -26,12 +25,12 @@ public class HomeController {
 
     @GetMapping
     public String showHome() {
-        return "home";
+        return "index";
     }
 
     @PostMapping
     public String showHome2() {
-        return "home";
+        return "index";
     }
 
     @GetMapping("login")
@@ -55,7 +54,7 @@ public class HomeController {
             optionalConfirmationToken.ifPresent(userService::confirmUser);
         }
 
-        return "/sign-in";
+        return "index";
     }
 
 }
