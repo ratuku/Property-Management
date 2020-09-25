@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, dataService))
+                //.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, dataService)) // used for API Authentication
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig, dataService), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/","/assets/**","/scss/**","/css/**","/js/**", "/bootstrap-3.4.1-dist/**", "/controller/**","/api/register/**").permitAll()
