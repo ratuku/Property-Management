@@ -40,11 +40,17 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig, SecretKey secretKey, DataService dataService ) {
+    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager,
+                                                      JwtConfig jwtConfig, SecretKey secretKey,
+                                                      DataService dataService ) {
         this.authenticationManager = authenticationManager;
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
         this.dataService = dataService;
+
+        System.out.println("authenticationManager: " + authenticationManager);
+        //System.out.println("authenticationManager: " + authenticationManager.authenticat;
+
     }
 
     @SneakyThrows
@@ -53,10 +59,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         UsernameAndPasswordAuthenticationRequest authenticationRequest;
         ServletInputStream servletInputStream = request.getInputStream();
-        try{
+        try {
             authenticationRequest = new ObjectMapper()
                     .readValue(servletInputStream, UsernameAndPasswordAuthenticationRequest.class);
-        } catch (IOException exception){
+        } catch (IOException exception) {
             throw new IOException(exception);
         }
 
@@ -82,13 +88,15 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .compact();
         response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
         dataService.setUserToken(token, authResult.getName());
-        String data = dataService.getUserFullInfo(authResult.getName());
+        //String data = dataService.getUserFullInfo(authResult.getName());
 
-        response.setContentType("application/json");
+        System.out.println("Succeccfully authenticated");
+
+/*        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         out.print(data);
-        out.flush();
+        out.flush();*/
     }
 
     @Override

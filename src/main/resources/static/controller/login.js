@@ -8,10 +8,12 @@
 
         console.log("url; " + url);
 
+        var data =
+
         $('#submitButtonr').click( function () {
             //alert("Hello");
 
-                submit4();
+                //submit4();
 
                 //alert("Hello");
             });

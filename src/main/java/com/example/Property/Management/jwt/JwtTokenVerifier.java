@@ -8,6 +8,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +21,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +48,9 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader(jwtConfig.getAuthorizationHeader());
 
         if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {
+
+            //setJwtToken(SecurityContextHolder.getContext().getAuthentication(), response);
+
             filterChain.doFilter(request,response);
             return;
         }
@@ -96,6 +102,22 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         }
         // very important, sends info to next filter in the filter chain....
         filterChain.doFilter(request, response);
+    }
+
+    private void setJwtToken(Authentication  authentication, HttpServletResponse response){
+
+        if (authentication!=null && !(authentication instanceof AnonymousAuthenticationToken)){
+            String token = Jwts.builder()
+                    .setSubject(authentication.getName())
+                    .claim("authorities", authentication.getAuthorities())
+                    .setIssuedAt(new Date())
+                    .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
+                    .signWith(secretKey)
+                    .compact();
+            response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
+            dataService.setUserToken(token, authentication.getName());
+        }
+
     }
 }
 
