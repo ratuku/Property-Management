@@ -62,7 +62,12 @@ public class HomeController {
 
         log.info("here");
 
-        return "login2";}
+        return "login";}
+
+    @GetMapping
+    public String landingPage(){
+        return "landingPage";
+    }
 
  /*   @GetMapping
     public String landingPage() {return "login2";}
