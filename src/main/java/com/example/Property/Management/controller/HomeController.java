@@ -9,10 +9,7 @@ import com.example.Property.Management.service.DataService;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,10 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.crypto.SecretKey;
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
@@ -55,7 +48,7 @@ public class HomeController {
                 .signWith(secretKey)
                 .compact();
 
-        dataService.setUserToken(token, authResult.getName());
+        dataService.setUserJWTToken(token, authResult.getName());
         String data = dataService.getUserFullInfo(authResult.getName());
 
         model.addAttribute("data", data);

@@ -1,6 +1,5 @@
 package com.example.Property.Management.jwt;
 
-import com.example.Property.Management.entity.RegistrationForm;
 import com.example.Property.Management.service.DataService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
@@ -14,8 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
@@ -24,7 +21,6 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.Date;
 import org.json.simple.JSONObject;
@@ -47,10 +43,6 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         this.jwtConfig = jwtConfig;
         this.secretKey = secretKey;
         this.dataService = dataService;
-
-        System.out.println("authenticationManager: " + authenticationManager);
-        //System.out.println("authenticationManager: " + authenticationManager.authenticat;
-
     }
 
     @SneakyThrows
@@ -87,7 +79,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .signWith(secretKey)
                 .compact();
         response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
-        dataService.setUserToken(token, authResult.getName());
+        dataService.setUserJWTToken(token, authResult.getName());
         //String data = dataService.getUserFullInfo(authResult.getName());
 
         System.out.println("Succeccfully authenticated");

@@ -67,7 +67,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             Claims body = claimsJws.getBody();
             String username = body.getSubject();
 
-            String tokenDB = dataService.getUserToken(username);
+            String tokenDB = dataService.getUserJWTToken(username);
             if(!token.equals(tokenDB)){
                 //throw new IllegalStateException(String.format("Token %s is no longer valid", token));
                 //throw new JwtException(String.format("Token %s is no longer valid", token));
@@ -115,7 +115,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     .signWith(secretKey)
                     .compact();
             response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
-            dataService.setUserToken(token, authentication.getName());
+            dataService.setUserJWTToken(token, authentication.getName());
         }
 
     }

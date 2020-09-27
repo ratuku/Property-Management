@@ -95,11 +95,11 @@ public class DataService {
         return "";
     }
 
-    public void setUserToken(String token, String username){
+    public void setUserJWTToken(String token, String username){
         userService.setUserToken(token, username);
     }
 
-    public String getUserToken(String username){
+    public String getUserJWTToken(String username){
         String token = userService.getUserToken(username);
         return token;
     }
