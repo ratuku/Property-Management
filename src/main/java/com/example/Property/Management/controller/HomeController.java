@@ -49,10 +49,11 @@ public class HomeController {
                 .compact();
 
         dataService.setUserJWTToken(token, authResult.getName());
-        String data = dataService.getUserFullInfo(authResult.getName());
+        //String data = dataService.getUserFullInfo(authResult.getName());
 
-        model.addAttribute("data", data);
+        //model.addAttribute("data", data);
         model.addAttribute("token", token);
+        model.addAttribute("email", authResult.getName());
 
         return "index";
     }

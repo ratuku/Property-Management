@@ -13,7 +13,7 @@ import java.util.*;
 
 @Log4j2
 @RestController
-@RequestMapping(path = "api/home")
+@RequestMapping(path = "api/home", produces = "application/json")
 public class homeAPI {
 
     private final DataService dataService;

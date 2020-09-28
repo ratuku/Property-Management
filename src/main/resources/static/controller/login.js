@@ -8,7 +8,7 @@
 
         console.log("url; " + url);
 
-        var data =
+        //var data =
 
         $('#submitButtonr').click( function () {
             //alert("Hello");

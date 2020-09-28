@@ -49,8 +49,6 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
         if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {
 
-            //setJwtToken(SecurityContextHolder.getContext().getAuthentication(), response);
-
             filterChain.doFilter(request,response);
             return;
         }
@@ -102,22 +100,6 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
         }
         // very important, sends info to next filter in the filter chain....
         filterChain.doFilter(request, response);
-    }
-
-    private void setJwtToken(Authentication  authentication, HttpServletResponse response){
-
-        if (authentication!=null && !(authentication instanceof AnonymousAuthenticationToken)){
-            String token = Jwts.builder()
-                    .setSubject(authentication.getName())
-                    .claim("authorities", authentication.getAuthorities())
-                    .setIssuedAt(new Date())
-                    .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
-                    .signWith(secretKey)
-                    .compact();
-            response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
-            dataService.setUserJWTToken(token, authentication.getName());
-        }
-
     }
 }
 
