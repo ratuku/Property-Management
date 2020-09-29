@@ -50,7 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, dataService)) // used for API Authentication
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig, dataService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/","/assets/**","/scss/**","/css/**","/js/**", "/bootstrap-3.4.1-dist/**", "/controller/**","/api/register/**").permitAll()
+                .antMatchers("/","/assets/**","/scss/**","/css/**","/js/**", "/bootstrap-3.4.1-dist/**", "/controller/**",
+                        "/api/register/**","/register").permitAll()
                 .anyRequest().authenticated()
                .and()
                 .formLogin()

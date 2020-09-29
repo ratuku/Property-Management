@@ -1,25 +1,31 @@
 package com.example.Property.Management.controller;
 
+import com.example.Property.Management.auth.User;
 import com.example.Property.Management.auth.UserService;
+import com.example.Property.Management.dto.UserDto;
 import com.example.Property.Management.entity.ConfirmationToken;
+import com.example.Property.Management.entity.Owner;
 import com.example.Property.Management.entity.RegistrationForm;
 import com.example.Property.Management.jwt.JwtConfig;
+import com.example.Property.Management.repository.OwnerRepository;
 import com.example.Property.Management.service.ConfirmationTokenService;
 import com.example.Property.Management.service.DataService;
+import com.example.Property.Management.utility.Converter;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -33,6 +39,7 @@ public class HomeController {
     private final ConfirmationTokenService confirmationTokenService;
     private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
+    private final OwnerRepository ownerRepository;
 
     @GetMapping("/home")
     public String showHome(Authentication authResult,
@@ -73,14 +80,65 @@ public class HomeController {
  /*   @GetMapping
     public String landingPage() {return "login2";}
 */
-    @GetMapping("register")
-    public String register() {return "register";}
+    @GetMapping("/register")
+    public String register(Model model) {
+        model.addAttribute("form", new RegistrationForm());
+        return "register";}
 
-    @PostMapping("register")
-    public String register(RegistrationForm registrationForm) {
+    @PostMapping("/register")
+    public String register(@ModelAttribute("form")  RegistrationForm form) {
+
+        log.info("form API: ");
+
+        log.info("form: " + form);
+
+        Map<String, Object> mapResponse = new HashMap<>();
+        String errorMessage = "Error while trying to save new user";
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+       try {
+            log.info("form API: " + form);
+            Owner owner = form.getOwner();
+            User user = form.getUser();
+
+            log.info("form API: " + owner);
+            log.info("form API: " + user);
+
+            // Check that email is unique
+            if(!userService.isEmailUnique(user.getUsername())) {
+                errorMessage = "Email already exist";
+                httpStatus = HttpStatus.CONFLICT;
+                throw new Exception();
+            }
+
+            owner = ownerRepository.save(owner);
+            mapResponse.put("owner", owner);
+
+            user.encodePassword();
+            user.setOwner(owner);
+            user = userService.saveUser(user);
+            UserDto userDto = Converter.userToDto(user);
+            mapResponse.put("user", userDto);
+
+            //Save confirmation token
+            log.info("create confirmationToken");
+            final ConfirmationToken confirmationToken = new ConfirmationToken(user);
+            confirmationTokenService.saveConfirmationToken(confirmationToken);
+
+            log.info("confirmationToken: " + confirmationToken.toString());
+
+            log.info("sendEmail");
+            dataService.sendEmail(user.getUsername(), confirmationToken.getToken());
+
+            //return new ResponseEntity<>(mapResponse, HttpStatus.OK);
+       } catch (Exception exception) {
+            log.error(exception.toString());
+            mapResponse = new HashMap<>();
+            mapResponse.put("Error", errorMessage);
+            //return new ResponseEntity<>(mapResponse, httpStatus);
+        }
 
         //dataService.registerUser(registrationForm);
-        return "redirect:/register";
+        return "registrationWaitingForConfirmation";
     }
 
     @GetMapping("/confirm")
@@ -91,7 +149,7 @@ public class HomeController {
             optionalConfirmationToken.ifPresent(userService::confirmUser);
         }
 
-        return "index";
+        return "registrationConfirmed";
     }
 
 }
