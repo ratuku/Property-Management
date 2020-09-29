@@ -35,7 +35,7 @@ public class DataService {
     ConfirmationTokenService confirmationTokenService;
 
 
-    public UsernameAndPasswordAuthenticationRequest registerUser( RegistrationForm form){
+  /*  public UsernameAndPasswordAuthenticationRequest registerUser( RegistrationForm form){
 
         log.info("form: " + form);
         Owner owner = form.getOwner();
@@ -60,7 +60,7 @@ public class DataService {
 
         return new UsernameAndPasswordAuthenticationRequest(user.getUsername(), originalPassword);
         }
-
+*/
     public String getUserFullInfo(String username){
         UserDto user = userService.getUserDtoByUsername(username);
 
@@ -109,7 +109,7 @@ public class DataService {
 
         msg.setTo(emailAddress);
         msg.setSubject("Property Academy:  registration");
-        msg.setText("Hi, \n \nHere is your confirmation token link http://localhost:8080/api/register/confirm?token=" +
+        msg.setText("Hi, \n \nHere is your confirmation token link http://localhost:8080/register/confirm?token=" +
                 token);
 
         javaMailSender.send(msg);

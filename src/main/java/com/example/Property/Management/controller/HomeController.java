@@ -86,7 +86,7 @@ public class HomeController {
         return "register";}
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("form")  RegistrationForm form) {
+    public String register(@ModelAttribute("form")  RegistrationForm form) throws Exception {
 
         log.info("form API: ");
 
@@ -95,53 +95,41 @@ public class HomeController {
         Map<String, Object> mapResponse = new HashMap<>();
         String errorMessage = "Error while trying to save new user";
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-       try {
-            log.info("form API: " + form);
-            Owner owner = form.getOwner();
-            User user = form.getUser();
+        log.info("form API: " + form);
+        Owner owner = form.getOwner();
+        User user = form.getUser();
 
-            log.info("form API: " + owner);
-            log.info("form API: " + user);
+        log.info("form API: " + owner);
+        log.info("form API: " + user);
 
-            // Check that email is unique
-            if(!userService.isEmailUnique(user.getUsername())) {
-                errorMessage = "Email already exist";
-                httpStatus = HttpStatus.CONFLICT;
-                throw new Exception();
-            }
-
-            owner = ownerRepository.save(owner);
-            mapResponse.put("owner", owner);
-
-            user.encodePassword();
-            user.setOwner(owner);
-            user = userService.saveUser(user);
-            UserDto userDto = Converter.userToDto(user);
-            mapResponse.put("user", userDto);
-
-            //Save confirmation token
-            log.info("create confirmationToken");
-            final ConfirmationToken confirmationToken = new ConfirmationToken(user);
-            confirmationTokenService.saveConfirmationToken(confirmationToken);
-
-            log.info("confirmationToken: " + confirmationToken.toString());
-
-            log.info("sendEmail");
-            dataService.sendEmail(user.getUsername(), confirmationToken.getToken());
-
-            //return new ResponseEntity<>(mapResponse, HttpStatus.OK);
-       } catch (Exception exception) {
-            log.error(exception.toString());
-            mapResponse = new HashMap<>();
-            mapResponse.put("Error", errorMessage);
-            //return new ResponseEntity<>(mapResponse, httpStatus);
+        // Check that email is unique
+        if(!userService.isEmailUnique(user.getUsername())) {
+            errorMessage = "Email already exist";
+            httpStatus = HttpStatus.CONFLICT;
+            throw new Exception(errorMessage);
         }
+
+        owner = ownerRepository.save(owner);
+        user.setOwner(owner);
+        user.encodePassword();
+        user.setOwner(owner);
+        user = userService.saveUser(user);
+
+        //Save confirmation token
+        log.info("create confirmationToken");
+        final ConfirmationToken confirmationToken = new ConfirmationToken(user);
+        confirmationTokenService.saveConfirmationToken(confirmationToken);
+
+        log.info("confirmationToken: " + confirmationToken.toString());
+
+        log.info("sendEmail");
+        dataService.sendEmail(user.getUsername(), confirmationToken.getToken());
 
         //dataService.registerUser(registrationForm);
         return "registrationWaitingForConfirmation";
     }
 
-    @GetMapping("/confirm")
+    @GetMapping("/register/confirm")
     String confirmMail(@RequestParam("token") String token) {
         if (token.length()==36) {
             Optional<ConfirmationToken> optionalConfirmationToken = confirmationTokenService.findConfirmationTokenByToken(token);

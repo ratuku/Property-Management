@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.crypto.SecretKey;
+import java.util.concurrent.TimeUnit;
 
 
 @Configuration
@@ -44,10 +45,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                //.sessionManagement()
-                  //  .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                //.and()
-                //.addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey, dataService)) // used for API Authentication
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig, dataService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/","/assets/**","/scss/**","/css/**","/js/**", "/bootstrap-3.4.1-dist/**", "/controller/**",
@@ -59,6 +56,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .defaultSuccessUrl("/home", true)
                     .usernameParameter("username")
                     .passwordParameter("password")
+                .and()
+                .rememberMe() //defaults to 2 weeks
+                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+                    .key("zhRWtCRTVSpUP2Dp6z4qhkCB5aBxsPZkTnsbn88AmgFTkNR58RyxUVAr6pcv")
                 .and()
                 .logout()
                     .logoutUrl("/logout")
